@@ -73,12 +73,23 @@ class ContactsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func saveContacts() {
-        let success = NSKeyedArchiver.archiveRootObject(self.array, toFile: Person.path)
-        if !success {
-            print("file save failed!")
-        } else {
-            print("file save successful!")
+        let queue = DispatchQueue(label: "信息操作")
+        queue.async {
+            let success = NSKeyedArchiver.archiveRootObject(self.array, toFile: Person.path)
+            if !success {
+                print("file save failed!")
+            } else {
+                print("file save successful!")
+            }
+            DispatchQueue.main.sync {
+                let alert = UIAlertController(title: "状态", message: "数据化成功", preferredStyle: .alert)
+                let action = UIAlertAction(title: "知道了", style: .default, handler: nil)
+                alert.addAction(action)
+                
+                self.present(alert, animated: true, completion: nil)
+            }
         }
+
     }
     
     // MARK: - 下拉更新列表
@@ -182,7 +193,7 @@ class ContactsViewController: UIViewController, UITableViewDataSource, UITableVi
         } else {
             self.array[sectionHeaders[self.selectedIndex!.section]]![self.selectedIndex!.row].Favorite = self.contactFavorite.isHighlighted
         }
-        self.saveContacts() // 保存收藏信息
+        self.saveContacts() // 保存数据
     }
     
     // MARK: - UITableViewDataSource | UITableViewDelegate 重载方法
@@ -343,8 +354,7 @@ class ContactsViewController: UIViewController, UITableViewDataSource, UITableVi
                 }
                 count += 1
             }
-            
-            self.saveContacts() // 数据本地化
+            self.saveContacts() // 保存
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
