@@ -245,6 +245,8 @@ class ContactsViewController: UIViewController, UITableViewDataSource, UITableVi
             return self.array[sectionHeaders[section]]!.count
         }
     }
+    
+    
 
     // TODO: 绘制Cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -272,6 +274,7 @@ class ContactsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         self.selectedIndex = indexPath // 保存最新的选择的IndexPath
         
         if tableView.isEqual(self.searchTable) {
